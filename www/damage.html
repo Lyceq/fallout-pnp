@@ -1,0 +1,238 @@
+<html>
+	<head>
+		<title>Fallout Damage Calculator</title>
+		<link rel="stylesheet" type="text/css" href="/styles/sforce/main.css" />
+		<link rel="stylesheet" type="text/css" href="sforce-fallout.css" />
+		<script type="text/javascript" src="http://websvc-app01.test.submersible-games.com:8001/socket.io/socket.io.js"></script>
+		<script type="text/javascript" src="fallout.js"></script>
+		<script type="text/javascript" src="layout.js"></script>
+		<script type="text/javascript" src="events.js"></script>
+		<script type="text/javascript">
+			var armors = { };
+
+			handlers.msg.push(function(msg) {
+				log(msg);
+			});
+
+			handlers.gotTargetName.push(function(name) {
+				var targetList = document.getElementById("targetNames");
+				for (var i = 0; i < targetList.options.length; i++) {
+					if (targetList.options[i].value == name) return;
+				}
+				targetList.innerHTML += '<option value="' + name + '" />';
+				//log("Received target name " + name + " from server.");
+			});
+
+			handlers.gotArmorName.push(function(name) {
+				var armorList = document.getElementById("armorNames");
+				for (var i = 0; i < armorList.options.length; i++) {
+					if (armorList.options[i].value == name) return;
+				}
+				armorList.innerHTML += '<option value="' + name + '" />';
+				log("Received armor name " + name + " from server.");
+			});
+
+			handlers.gotTarget.push(function(target) {
+				var row = findTargetRow(target.name);
+				if (row == null) {
+					row = document.createElement('tr');
+					addTargetBlock(row, target.name);
+					document.getElementById('targets').appendChild(row);
+				}
+				writeTargetToRow(row, target);
+				log("Received target data for " + target.name + " from server.");
+			});
+
+			handlers.gotArmor.push(function(armor) {
+				armors[armor.name] = armor;
+				log("Received armor data for " + armor.name + " from server.");
+			});
+				
+			function calculateDamage() {
+				var card = getSelectedAttackerCard();
+				var attacker = getAttackerFromCard(card);
+
+				var cells = document.getElementsByClassName("damageResistanceInputCell");
+				for (var i = 0; i < cells.length; i++) {
+					var mitigation = parseDamageMitigation(cells[i].childNodes[0].value);
+					damage = adjustDamage(attacker, mitigation);
+					cells[i].nextElementSibling.childNodes[0].value = buildDamageMitigationString(damage.dt, damage.dr) + " = " + damage.damage;
+				}
+			}
+
+			function saveArmor() {
+				var armor = {
+					name: sanitizeName(document.getElementById("armorName").value),
+					resistances: {
+						normal: document.getElementById("armorNormal").value,
+						laser: document.getElementById("armorLaser").value,
+						fire: document.getElementById("armorFire").value,
+						plasma: document.getElementById("armorPlasma").value,
+						explosion: document.getElementById("armorExplosion").value
+					}
+				};
+
+				armors[armor.name] = armor;
+				saveArmorToServer(armor);
+			}
+
+			var loadingArmor = undefined;
+
+                        function displayArmor(armor) {
+                                document.getElementById("armorName").value = armor.name;
+                                document.getElementById("armorNormal").value = armor.resistances.normal;
+                                document.getElementById("armorLaser").value = armor.resistances.laser;
+                                document.getElementById("armorFire").value = armor.resistances.fire;
+                                document.getElementById("armorPlasma").value = armor.resistances.plasma;
+                                document.getElementById("armorExplosion").value = armor.resistances.explosion;
+                        }
+
+			function loadArmor(name) {
+				if (name in armors) {
+					displayArmor(armors[name]);
+					return;
+				}
+
+				if (loadingArmor) {
+					log("Waiting for armor " + loadingArmor + " to load.");
+					return;
+				}
+
+				loadingArmor = name;
+
+				var displayArmorFromServer = function(armor) {
+					if (armor.name != name) return;
+					displayArmor(armor);
+					handlers.gotArmor.pop(displayArmor);
+					loadingArmor = undefined;
+				};
+
+				handlers.gotArmor.push(displayArmor);
+				getArmorFromServer(name);
+				setTimeout(function() {
+					if (loadingArmor == name) {
+						handlers.gotArmor.pop(displayArmor);
+						loadingArmor = undefined;
+						log("Server timed out when loading armor " + name + ".");
+					}
+				}, 5000);
+			}
+
+			function initialize() {
+				getTargetNamesFromServer();
+				getArmorNamesFromServer();
+
+				var attackerBlock = document.getElementById("attackers");
+				attackerBlock.appendChild(createAttackerCard("attacker1", "Attacker 1"));
+				attackerBlock.appendChild(createAttackerCard("attacker2", "Attacker 2"));
+				attackerBlock.appendChild(createAttackerCard("attacker3", "Attacker 3"));
+				attackerBlock.appendChild(createAttackerCard("attacker4", "Attacker 4"));
+				selectCard("attacker1");
+			}
+				
+		</script>
+	</head>
+	<body onload="initialize()">
+		<datalist id="targetNames"></datalist>
+		<datalist id="armorNames"></datalist>
+		<form id="damagetables" onchange="calculateDamage()">
+			<div id="attackers" class="cardBlock">
+			</div>
+			<div class="dialog">
+				<h3>Defenders</h3>
+				<table id="targets" class="targetTable">
+					<tr class="targetHeaderRow">
+						<th class="targetHeaderCell" colspan="2"></th>
+						<th class="targetHeaderCell" colspan="2">Normal</th>
+						<th class="targetHeaderCell" colspan="2">Laser</th>
+						<th class="targetHeaderCell" colspan="2">Fire</th>
+						<th class="targetHeaderCell" colspan="2">Plasma</th>
+						<th class="targetHeaderCell" colspan="2">Explosion</th>
+					</tr>
+					<tr class="targetHeaderRow">
+						<th class="targetHeaderCell">Target</th>
+						<th class="targetHeaderCell">Armor</th>
+						<th class="targetHeaderCell">Base</th>
+						<th class="targetHeaderCell">Final</th>
+                                                <th class="targetHeaderCell">Base</th>
+                                                <th class="targetHeaderCell">Final</th>
+                                                <th class="targetHeaderCell">Base</th>
+                                                <th class="targetHeaderCell">Final</th>
+                                                <th class="targetHeaderCell">Base</th>
+                                                <th class="targetHeaderCell">Final</th>
+                                                <th class="targetHeaderCell">Base</th>
+                                                <th class="targetHeaderCell">Final</th>
+					</tr>
+				</table>
+			</div>
+		</form>
+		<div id="controls" class="cardBlock">
+			<div id="targetControls" class="controlCard">
+				<div class="dialog">
+					<h3>Target Controls</h3>
+					<table class="cardTable">
+						<tr>
+							<td>Name:</td>
+							<td><input type="text" id="targetSelector" list="targetNames" /></td>
+						</tr>
+						<tr>
+							<td>Armor:</td>
+							<td><input type="text" id="armorSelector" list="armorNames" /></td>
+						</tr>
+						<tr>
+							<td colspan="2">
+								<center>
+									<input type="button" value="New Target" onclick="newTargetRow(sanitizeName(document.getElementById('targetSelector').value), document.getElementById('armorSelector').value)" />
+									<input type="button" value="Load Target" onclick="loadTarget(sanitizeName(document.getElementById('targetSelector').value), document.getElementById('armorSelector').value)" />
+								</center>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			<div id="armorControls" class="controlCard">
+				<div class="dialog">
+					<h3>Armor Controls</h3>
+					<table id="armorTable" class="cardTable">
+						<tr>
+							<td>Name:</td>
+							<td><input type="text" id="armorName" list="armorNames" /></td>
+						</tr>
+						<tr>
+							<td>Normal:</td>
+							<td><input type="text" id="armorNormal" pattern="([xX][0-9]+(\.[0-9]*)?|[0-9]+/-?[0-9]+%?)" placeholder="DT/DR" size="6" /></td>
+						</tr>
+						<tr>
+							<td>Laser:</td>
+							<td><input type="text" id="armorLaser" pattern="([xX][0-9]+(\.[0-9]*)?|[0-9]+/-?[0-9]+%?)" placeholder="DT/DR" size="6" /></td>
+						</tr>
+						<tr>
+							<td>Fire:</td>
+							<td><input type="text" id="armorFire" pattern="([xX][0-9]+(\.[0-9]*)?|[0-9]+/-?[0-9]+%?)" placeholder="DT/DR" size="6" /></td>
+						</tr>
+						<tr>
+							<td>Plasma:</td>
+							<td><input type="text" id="armorPlasma" pattern="([xX][0-9]+(\.[0-9]*)?|[0-9]+/-?[0-9]+%?)" placeholder="DT/DR" size="6" /></td>
+						</tr>
+						<tr>
+							<td>Explosion:</td>
+							<td><input type="text" id="armorExplosion" pattern="([xX][0-9]+(\.[0-9]*)?|[0-9]+/-?[0-9]+%?)" placeholder="DT/DR" size="6" /></td>
+						</tr>
+						<tr>
+							<td colspan="2">
+								<center>
+									<input type="button" value="Save" onclick="saveArmor(document.getElementById('armorTable'))" />
+									<input type="button" value="Load" onclick="loadArmor(sanitizeName(document.getElementById('armorName').value))" />
+									<input type="button" value="Delete" onclick="deleteArmorOnServer(sanitizeName(document.getElementById('armorName').value))" />
+								</center>
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+		<p>Message Log</p>
+		<div id="log">
+		</div>
+	</body>
+</html>

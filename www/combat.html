@@ -1,0 +1,55 @@
+<html>
+	<head>
+		<title>Fallout Combat Utility</title>
+                <link rel="stylesheet" type="text/css" href="/styles/sforce/main.css" />
+                <link rel="stylesheet" type="text/css" href="fallout.css" />
+                <script type="text/javascript" src="http://websvc-app01.test.submersible-games.com:8001/socket.io/socket.io.js"></script>
+		<script type="text/javascript" src="utils.js"></script>
+		<script type="text/javascript" src="events.js"></script>
+		<script type="text/javascript" src="common-controls.js"></script>
+		<script type="text/javascript" src="character.js"></script>
+		<script type="text/javascript" src="combat.js"></script>
+	</head>
+	<body onload="onLoad()">
+		<datalist id="characters"></datalist>
+		<datalist id="weapons"></datalist>
+		<datalist id="armors"></datalist>
+		<datalist id="helmets"></datalist>
+		<div id="header" class="header">
+			<div id="header-border" class="border">
+				<div id="actions" class="buttonBar">
+					<span id="addCharacterGroup" class="groupBox">
+						<input id="addCharacterName" type="text" list="characters" selected />
+						<input id="addCharacter" type="button" value="Add Character" onclick="onAddCharacter()" />
+					</span>
+					<span id="selectGroup" class="groupBox">
+						Select:
+						<input id="selectAttacker" type="radio" name="selectRole" value="attacker" checked />Attacker
+						<input id="selectDefender" type="radio" name="selectRole" value="defender" />Defender
+						<input id="selectNone" type="radio" name="selectRole" value="none" />None
+					</span>
+					<span id="attackSingleGroup" class="groupBox">
+						<input id="attackSingle" type="button" value="Single Attack" onclick="onAttackSingle()" />
+					</span>
+					<span id="attackTargetedGroup" class="groupBox">
+						<select id="attackTargetedArea">
+							<option value="head">Head</option>
+							<option value="eye">Eye</option>
+							<option value="torso">Torso</option>
+							<option value="arm">Arm</option>
+							<option value="leg">Leg</option>
+						</select>
+						<input id="attackTargeted" type="button" value="Targeted Attack" onclick="onAttackTargeted()" />
+					</span>
+					<span id="attackBurstGroup" class="groupBox">
+						<input id="attackBurstCount" type="number" class="fieldNumber" placeholder="#" />
+						<input id="attackBurst" type="button" value="Burst Attack" onclick="onAttackBurst()" />
+					</span>
+				</div>
+				<div id="prompts" class="promptBlock">
+				</div>
+			</div>
+		</div>
+		<div id="characterCardBlock" class="cardBlock"></div>
+	</body>
+</html>

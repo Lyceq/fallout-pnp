@@ -1,0 +1,49 @@
+{
+	"name": "fallout",
+	"version": "0.0.1",
+	"description": "Provides backend services to Fallout pen and paper role playing utilities.",
+	"keywords": [ "fallout" ],
+	"homepage": "http://websvc-app01.submersible-games.com/fallout/",
+	"bugs": "",
+	"license": "TBD",
+	"author": {
+		"name": "Submersible Games",
+		"email": "andrew.mcniel@gmail.com",
+		"url": "http://www.submersible-games.com/"
+	},
+	"contributors": [
+		{
+			"name": "Andrew McNiel",
+			"email": "andrew.mcniel@gmail.com",
+			"url": ""
+		},
+		{
+			"name": "Noah Webb",
+			"email": "noah.webb@gmail.com",
+			"url": ""
+		},
+		{
+			"name": "Gavin Kisebach",
+			"email": "",
+			"url": ""
+		},
+		{
+			"name": "Nic Pruyne",
+			"email": "",
+			"url": ""
+		}
+	],
+	"files": [ "lib" ],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Lyceq/fallout-backend"
+	},
+	"dependencies": {
+		"socket.io": "1.4.x"
+	},
+	"engines": {
+		"node": "0.10.x",
+		"npm": "1.4.x"
+	},
+	"private": "true"
+}

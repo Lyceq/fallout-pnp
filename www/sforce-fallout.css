@@ -1,0 +1,101 @@
+h3 {
+	margin: 0em 0em 0.5em 0em;
+	text-align: center;
+}
+
+.dialog {
+	background-color: #000080;
+}
+
+.cardBlock {
+	overflow: hidden;
+}
+
+.attackerCard {
+	float: left;
+	width: 25%;
+}
+
+.attackerCard .dialog:hover {
+	background-color: #0000a0;
+}
+
+[attacker="selected"] {
+	background-color: #8080ff;
+}
+
+.cardTable {
+}
+
+.attackerName {
+	text-align: center;
+}
+
+.fieldLabel {
+	text-align: right;
+}
+
+.fieldInput {
+	width: 4em;
+}
+
+.targetBlock {
+}
+
+.targetTable {
+	text-align: left;
+}
+
+.targetHeaderRow {
+	border-bottom: 1px solid white;
+}
+
+.targetHeaderCell {
+	padding: 0em 0.5em;
+	text-align: center;
+}
+
+.targetRow {
+}
+
+.targetRow:nth-child(even) {
+}
+
+.targetCell {
+}
+
+.targetNameCell {
+	padding: 0.5em;
+}
+
+.targetNameField {
+}
+
+.damageResistanceInput {
+	padding: 0em;
+}
+
+.damageOutputField {
+	padding: 0em;
+}
+
+.damageResistanceInputCell {
+	padding: 0em 0em 0em 0.5em;
+}
+
+.damageResistanceOutputCell {
+	padding: 0em 0.5em 0em 0em;
+}
+
+.actionButton {
+}
+
+.actionBlock {
+}
+
+.actionCell {
+}
+
+.controlCard {
+	float: left;
+}

@@ -1,0 +1,37 @@
+<html>
+	<head>
+		<title>Fallout Data Entry</title>
+                <link rel="stylesheet" type="text/css" href="fallout.css" />
+                <script type="text/javascript" src="http://websvc-app01.test.submersible-games.com:8001/socket.io/socket.io.js"></script>
+		<script type="text/javascript" src="utils.js"></script>
+		<script type="text/javascript" src="events.js"></script>
+		<script type="text/javascript" src="common-controls.js"></script>
+		<script type="text/javascript" src="character.js"></script>
+		<script type="text/javascript" src="weapon.js"></script>
+		<script type="text/javascript" src="ammo.js"></script>
+		<script type="text/javascript" src="armor.js"></script>
+		<script type="type/javascript" src="helmet.js"></script>
+		<script type="text/javascript" src="entry.js"></script>
+	</head>
+	<body onload="onLoad()">
+		<datalist id="names"></datalist>
+		<div id="header" class="header">
+			<div id="header-border" class="border">
+				<div id="actions" class="buttonBar">
+					<span id="addGroup" class="groupBox">
+						<input id="name" type="text" list="names" selected />
+						<input id="add" type="button" value="Add" onclick="onAdd()" />
+						<input id="delete" type="button" value="Delete" onclick="onDelete()" />
+					</span>
+					<span id="saveArmorGroup" class="groupBox">
+						<input id="saveAll" type="button" value="Save All" onclick="onSaveAll()" />
+					</span>
+				</div>
+				<div id="prompts" class="promptBlock">
+				</div>
+			</div>
+		</div>
+		<div id="promptBlock" class="promptBlock"></div>
+		<div id="cardBlock" class="cardBlock"></div>
+	</body>
+</html>

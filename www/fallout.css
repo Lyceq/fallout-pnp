@@ -1,0 +1,110 @@
+body {
+	background-color: black;
+	color: white;
+}
+
+.header {
+        width: 100%;
+        overflow: hidden;
+}
+
+.cardBlock {
+	overflow-x: auto;
+}
+
+.card {
+	float: left;
+	min-width: 15em;
+}
+
+.card[role="attacker"] {
+	background-color: #800000;
+}
+
+.card[role="defender"] {
+	background-color: #008080;
+}
+
+.promptBlock {
+}
+
+.prompt {
+	width: 100%;
+}
+
+.border,.borderHighlight {
+        border-image-source: url(images/border.png);
+        border-image-slice: 8;
+        border-image-repeat: stretch;
+
+        border-width: 8px;
+        border-style: solid;
+
+        background-color: #000080;
+        color: white;
+
+        font-family: fantasy;
+
+        padding: 1em;
+        margin: 1em;
+}
+
+.borderHighlight:hover,.borderHighlight[selected="true"] {
+	background-color: #0000a0;
+}
+
+.cardHeader {
+	vertical-align: middle;
+}
+
+.groupBox {
+	border: 1px solid white;
+	padding: 0.25em;
+}
+
+.promptIcon {
+	float: left;
+}
+
+.fieldName {
+	margin: 0em 0em 0.5em 0em;
+	text-align: center;
+}
+
+.fieldResistance {
+}
+
+.fieldSelect {
+}
+
+.fieldText {
+}
+
+.fieldNumber {
+	width: 5em;
+}
+
+.tableStats {
+}
+
+.rowStats {
+}
+
+.cellLabel,.cellStats {
+}
+
+.cellLabel {
+	text-align: right;
+}
+
+.cellStats {
+}
+
+.imgButton {
+	float: right;
+	margin: 0.25em 0em 0em 0.25em;
+}
+
+.buttonBar {
+	text-align: center;
+}
